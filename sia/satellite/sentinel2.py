@@ -57,7 +57,6 @@ class Sentinel2:
 
     def get_product_ids(self, start_date, end_date, cloud_threshold, data_days_interval, shape_file=None, bbox=None):
         tile_list = self.shape_to_tiles(aoi_shp=shape_file, bbox=bbox)
-        tile_list = ['43RDM']
         poly = shape_to_polygon(shp_file=shape_file, bbox=bbox)
         print(f'Tiles found for the given AOI : {tile_list}')
         final_dict = {'single_tile': {}, 'merge_tile': {}}
@@ -106,7 +105,7 @@ class Sentinel2:
             data = final_dict['single_tile']
             _dates = list(sorted(data.keys()))
             for date in _dates:
-                print(f'Single Tile Metadata: {data[date]}')
+                # print(f'Single Tile Metadata: {data[date]}')
                 tile_cloud = data[date]['cloud_percentages']
                 if tile_cloud > cloud_threshold:
                     continue
