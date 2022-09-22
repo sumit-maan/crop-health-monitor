@@ -1,4 +1,4 @@
-from osgeo import gdal, ogr
+from osgeo import gdal
 
 
 def raster_to_array(raster_file, data_type):
