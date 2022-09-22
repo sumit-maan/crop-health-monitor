@@ -1,7 +1,7 @@
 from datetime import timedelta
 from datetime import datetime as dt
 import shapely.wkt
-from osgeo import gdal, ogr
+from osgeo import ogr
 from shapely.geometry import box
 from dateutil.relativedelta import relativedelta
 
