@@ -1,9 +1,5 @@
 from sia.satellite import sentinel2
 from sia.indices import indice
-from sia.utils.raster import *
-import os
-import errno
-from collections import defaultdict
 import numpy as np
 from multiprocessing import Pool, cpu_count
 
