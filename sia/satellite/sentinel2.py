@@ -30,7 +30,7 @@ class Sentinel2:
         self.s2_tile_shp = str(stream).split("'")[1]
 
     def get_mgrs_shp(self, aoi_shp, bbox):
-        aoi_mgrs_shp = 'sentinel2_bbox_mgrs.shp'
+        aoi_mgrs_shp = 'sentinel2_mgrs_shapefile.shp'
         try:
             os.remove(aoi_mgrs_shp)
         except OSError:
