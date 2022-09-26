@@ -62,6 +62,7 @@ class Indice:
         lswi = np.around(lswi, decimals=2, out=None)
         write_raster(f'{bands_path}/b8a.tif', lswi, f'{indices_path}/lswi.tif', gdal.GDT_Float32)
         b8a = b11 = lswi = None
+        print(f'Indices are Generated at {key}')
 
     @staticmethod
     def get_ndvi(red, nir):
@@ -71,7 +72,7 @@ class Indice:
         return arr
 
     @staticmethod
-    def get_savi(red, nir, l):  ## l = soil brightness correction factor could range from (0 -1)
+    def get_savi(red, nir, l):  # l = soil brightness correction factor could range from (0 -1)
         arr = (1.0 + l) * (nir - red) / (nir + red + l)
         return arr
 
