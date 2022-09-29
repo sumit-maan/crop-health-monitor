@@ -1,1 +1,1 @@
-# crop-health-monitor
+# satellite-indices-analytics
