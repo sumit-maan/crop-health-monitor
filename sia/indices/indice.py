@@ -48,7 +48,9 @@ class Indice:
 
         savi = self.get_savi(b4, b8, 0.428)
         savi = np.around(savi, decimals=2, out=None)
-        write_raster(f'{bands_path}/b4.tif', savi, f'{indices_path}/savi.tif', gdal.GDT_Float32)
+        write_raster(f'{bands_path}/b4.tif', savi, f'{bands_path}/savi_without_clip.tif', gdal.GDT_Float32)
+        merge_clip_raster(raster_file_list=[f'{bands_path}/savi_without_clip.tif'],
+                          output_file=f'{indices_path}/savi.tif', shp_file=shape_file)
         b4 = b8 = ndvi = savi = None
 
         b8a_file = merge_clip_raster(raster_file_list=raster_list['b8a_path'], output_file=f'{bands_path}/b8a.tif',
@@ -73,7 +75,8 @@ class Indice:
 
     @staticmethod
     def get_savi(red, nir, l):  # l = soil brightness correction factor could range from (0 -1)
-        arr = (1.0 + l) * (nir - red) / (nir + red + l)
+        c_factor = (1.0 + l)
+        arr = c_factor * (nir - red) / (nir + red + l)
         return arr
 
     @staticmethod
