@@ -62,3 +62,5 @@ def data_difference_days(product_dictionary, days_interval):
         else:
             prev_date = None
     return product_dictionary
+
+
