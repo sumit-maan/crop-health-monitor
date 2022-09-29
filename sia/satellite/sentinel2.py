@@ -8,7 +8,6 @@ from botocore.config import Config
 from shapely.geometry import Polygon
 from osgeo import gdal, ogr
 import pkg_resources
-
 from sia.utils.helper import *
 
 s3 = boto3.resource('s3', config=Config(signature_version=UNSIGNED))
