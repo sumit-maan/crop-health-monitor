@@ -23,7 +23,6 @@ args = parser.parse_args()
 
 def main(start_date, end_date, cloud_threshold, data_days_interval, shape_file=None, bbox=None):
     pids = s2.get_product_ids(start_date, end_date, cloud_threshold, data_days_interval, shape_file, bbox)
-
     if args.shape_file:
         args_list = [(key, val, args.shape_file) for key, val in pids.items()]
     else:
