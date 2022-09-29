@@ -24,7 +24,6 @@ class Sentinel2:
         self.bands = ['B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B8A', 'B08', 'B09', 'B11', 'B12']
         self.crs = 'EPSG:4326'
         self.sat_name = 'sentinel2'
-        self.sat_id = 'S2'
         self.cloud = 10
         self.s2_tile_shp = str(stream).split("'")[1]
 
