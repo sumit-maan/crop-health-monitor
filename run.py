@@ -31,6 +31,7 @@ def main(start_date, end_date, cloud_threshold, data_days_interval, shape_file=N
     pool = Pool(cpu_count() - 2)
     with pool:
         pool.map(ig.indices_generator, args_list)
+    pool.close()
 
 
 if __name__ == '__main__':
