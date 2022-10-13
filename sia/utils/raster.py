@@ -53,3 +53,10 @@ def write_raster(ref_raster, array, dst_filename, gdal_GDT_datatype):
     out_ds.FlushCache()
     del out_ds
     return dst_filename
+
+
+def raster_shape(raster_file_path):
+    ds = gdal.Open(raster_file_path)
+    height = ds.RasterXSize
+    width = ds.RasterYSize
+    return height, width
