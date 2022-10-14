@@ -53,12 +53,14 @@ class Sentinel2:
         del ds
         return mgrs_list
 
-    def get_product_ids(self, start_date, end_date, cloud_threshold, data_days_interval, shape_file=None, bbox=None):
-        tile_list = self.shape_to_tiles(aoi_shp=shape_file, bbox=bbox)
-        poly = shape_to_polygon(shp_file=shape_file, bbox=bbox)
-        print(f'Tiles found for the given AOI : {tile_list}')
+    def get_product_ids(self, start_date, end_date, cloud_threshold, data_days_interval, shape_file=None,
+                        bbox=None, tiles=None):
+        if not tiles:
+            tiles = self.shape_to_tiles(aoi_shp=shape_file, bbox=bbox)
+            poly = shape_to_polygon(shp_file=shape_file, bbox=bbox)
+        print(f'Tiles found for the given AOI : {tiles}')
         final_dict = {'single_tile': {}, 'merge_tile': {}}
-        for tile in tile_list:
+        for tile in tiles:
             utm_zone, lat_band, grid_square = str(tile)[:2], str(tile)[2], str(tile)[3:5]
             for _date in datetime_iterator(start_date, end_date):
                 _year = int(_date.year)
