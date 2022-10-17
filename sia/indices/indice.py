@@ -17,6 +17,8 @@ class Indice:
         key = pid_set[0]
         val = pid_set[1]
         shape_file = pid_set[2]
+        height = pid_set[3]
+        width = pid_set[4]
         base_name = os.path.basename(shape_file)
         root_fname = os.path.splitext(base_name)[0]
         bands_path = os.path.join('data', str(root_fname), 'bands', str(key))
@@ -36,32 +38,35 @@ class Indice:
             raster_list['b11_path'].append(s2.pid_to_path(item, 'B11'))
 
         b4_file = merge_clip_raster(raster_file_list=raster_list['b4_path'], output_file=f'{bands_path}/b4.tif',
-                                    shp_file=shape_file)
+                                    shp_file=shape_file, out_height=height, out_width=width)
         b8_file = merge_clip_raster(raster_file_list=raster_list['b8_path'], output_file=f'{bands_path}/b8.tif',
-                                    shp_file=shape_file)
+                                    shp_file=shape_file, out_width=width, out_height=height)
 
+        agrimask_path = 'data/temp/agrimask.tif'
+        agrimask_arr = raster_to_array(agrimask_path, 'float')
         b4 = raster_to_array(b4_file, 'int16')
         b8 = raster_to_array(b8_file, 'int16')
         ndvi = self.get_ndvi(b4, b8)
         ndvi = np.around(ndvi, decimals=2, out=None)
+        ndvi[agrimask_arr == 0] = np.nan
         write_raster(f'{bands_path}/b4.tif', ndvi, f'{indices_path}/ndvi.tif', gdal.GDT_Float32)
 
         savi = self.get_savi(b4, b8, 0.428)
         savi = np.around(savi, decimals=2, out=None)
-        write_raster(f'{bands_path}/b4.tif', savi, f'{bands_path}/savi_without_clip.tif', gdal.GDT_Float32)
-        merge_clip_raster(raster_file_list=[f'{bands_path}/savi_without_clip.tif'],
-                          output_file=f'{indices_path}/savi.tif', shp_file=shape_file)
+        savi[agrimask_arr == 0] = np.nan
+        write_raster(f'{bands_path}/b4.tif', savi, f'{indices_path}/savi.tif', gdal.GDT_Float32)
         b4 = b8 = ndvi = savi = None
 
         b8a_file = merge_clip_raster(raster_file_list=raster_list['b8a_path'], output_file=f'{bands_path}/b8a.tif',
-                                     shp_file=shape_file)
+                                     shp_file=shape_file, out_width=width, out_height=height)
         b11_file = merge_clip_raster(raster_file_list=raster_list['b11_path'], output_file=f'{bands_path}/b11.tif',
-                                     shp_file=shape_file)
+                                     shp_file=shape_file, out_width=width, out_height=height)
         b8a = raster_to_array(b8a_file, 'int16')
         b11 = raster_to_array(b11_file, 'int16')
 
         lswi = self.get_lswi(b8a, b11)
         lswi = np.around(lswi, decimals=2, out=None)
+        lswi[agrimask_arr == 0] = np.nan
         write_raster(f'{bands_path}/b8a.tif', lswi, f'{indices_path}/lswi.tif', gdal.GDT_Float32)
         b8a = b11 = lswi = None
         print(f'Indices are Generated at {key}')
@@ -77,6 +82,7 @@ class Indice:
     def get_savi(red, nir, l):  # l = soil brightness correction factor could range from (0 -1)
         c_factor = (1.0 + l)
         arr = c_factor * (nir - red) / (nir + red + l)
+        arr[arr == 0] = np.nan
         return arr
 
     @staticmethod
