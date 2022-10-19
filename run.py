@@ -1,12 +1,12 @@
 import errno
 import os
+import shutil
 
 from sia.satellite import sentinel2
 from sia.indices import indice
 import numpy as np
 from multiprocessing import Pool, cpu_count
 from datetime import datetime, timedelta
-from sia.utils.raster import merge_clip_raster
 from sia.utils.raster import raster_sampling
 import argparse
 
@@ -33,6 +33,7 @@ args = parser.parse_args()
 
 def main(start_date, end_date, cloud_threshold, data_days_interval, shape_file=None, bbox=None, tiles=None,
          agrimask=None):
+    shutil.rmtree('data')
     pids = s2.get_product_ids(start_date, end_date, cloud_threshold, data_days_interval, shape_file, bbox, tiles)
     height = None
     width = None
