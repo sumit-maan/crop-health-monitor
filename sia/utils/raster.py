@@ -26,16 +26,10 @@ def merge_clip_raster(raster_file_list, output_file=None, shp_file=None, bbox=No
                   dstSRS="+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0",
                   cutlineDSName=shp_file, cropToCutline=True, width=out_width, height=out_height)
     else:
-        # if out_width:
         ds = gdal.BuildVRT('', ds_lst, VRTNodata=0, srcNodata=0)
         gdal.Warp(output_file, ds, format='GTiff', dstNodata=0,
                   dstSRS="+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0",
                   outputBounds=tuple(bbox), cropToCutline=True, width=out_width, height=out_height)
-        # else:
-        #     ds = gdal.BuildVRT('', ds_lst, VRTNodata=0, srcNodata=0)
-        #     gdal.Warp(output_file, ds, format='GTiff', dstNodata=0,
-        #               dstSRS="+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0",
-        #               outputBounds=tuple(bbox), cropToCutline=True, width=out_width, height=out_height)
     return output_file
 
 
