@@ -1,3 +1,6 @@
+#  python run.py -sf /Users/sumitmaan/work/dehaat/india_shapefile/districts/khagaria/file.shp -ag
+#  /Users/sumitmaan/work/dehaat/crop-health-monitor/khagaria.img -sd 2021-10-01 -ed 2022-03-31
+
 import errno
 import os
 import shutil
@@ -33,7 +36,10 @@ args = parser.parse_args()
 
 def main(start_date, end_date, cloud_threshold, data_days_interval, shape_file=None, bbox=None, tiles=None,
          agrimask=None):
-    shutil.rmtree('data')
+    try:
+        shutil.rmtree('data')
+    except OSError as e:
+        print("Error: %s - %s." % (e.filename, e.strerror))
     pids = s2.get_product_ids(start_date, end_date, cloud_threshold, data_days_interval, shape_file, bbox, tiles)
     height = None
     width = None
