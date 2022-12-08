@@ -42,18 +42,18 @@ class Indice:
         b8_file = merge_clip_raster(raster_file_list=raster_list['b8_path'], output_file=f'{bands_path}/b8.tif',
                                     shp_file=shape_file, out_width=width, out_height=height)
 
-        agrimask_path = 'data/temp/agrimask.tif'
-        agrimask_arr = raster_to_array(agrimask_path, 'float')
+        # agrimask_path = 'data/temp/agrimask.tif'
+        # agrimask_arr = raster_to_array(agrimask_path, 'float')
         b4 = raster_to_array(b4_file, 'int16')
         b8 = raster_to_array(b8_file, 'int16')
         ndvi = self.get_ndvi(b4, b8)
         ndvi = np.around(ndvi, decimals=2, out=None)
-        ndvi[agrimask_arr == 0] = np.nan
+        # ndvi[agrimask_arr == 0] = np.nan
         write_raster(f'{bands_path}/b4.tif', ndvi, f'{indices_path}/ndvi.tif', gdal.GDT_Float32)
 
         savi = self.get_savi(b4, b8, 0.428)
         savi = np.around(savi, decimals=2, out=None)
-        savi[agrimask_arr == 0] = np.nan
+        # savi[agrimask_arr == 0] = np.nan
         write_raster(f'{bands_path}/b4.tif', savi, f'{indices_path}/savi.tif', gdal.GDT_Float32)
         b4 = b8 = ndvi = savi = None
 
@@ -66,7 +66,7 @@ class Indice:
 
         lswi = self.get_lswi(b8a, b11)
         lswi = np.around(lswi, decimals=2, out=None)
-        lswi[agrimask_arr == 0] = np.nan
+        # lswi[agrimask_arr == 0] = np.nan
         write_raster(f'{bands_path}/b8a.tif', lswi, f'{indices_path}/lswi.tif', gdal.GDT_Float32)
         b8a = b11 = lswi = None
         print(f'Indices are Generated at {key}')
