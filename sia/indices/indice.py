@@ -4,6 +4,7 @@ import os
 import errno
 from collections import defaultdict
 import numpy as np
+from datetime import datetime, timedelta
 
 np.seterr(divide='ignore', invalid='ignore')
 s2 = sentinel2.Sentinel2()
@@ -17,12 +18,19 @@ class Indice:
         key = pid_set[0]
         val = pid_set[1]
         shape_file = pid_set[2]
-        height = pid_set[3]
-        width = pid_set[4]
-        base_name = os.path.basename(shape_file)
-        root_fname = os.path.splitext(base_name)[0]
-        bands_path = os.path.join('data', str(root_fname), 'bands', str(key))
-        indices_path = os.path.join('data', str(root_fname), 'indices', str(key))
+        bounds = pid_set[3]
+        height = pid_set[4]
+        width = pid_set[5]
+        if shape_file:
+            base_name = os.path.basename(shape_file)
+            root_fname = os.path.splitext(base_name)[0]
+            bands_path = os.path.join('data', str(root_fname), 'bands', str(key))
+            indices_path = os.path.join('data', str(root_fname), 'indices', str(key))
+        else:
+            root_fname = 'bbox_' + str(datetime.today()).replace('-', '_').replace(':', '_').replace(' ', '_').split('.')[0]
+            bands_path = os.path.join('data', str(root_fname), 'bands', str(key))
+            indices_path = os.path.join('data', str(root_fname), 'indices', str(key))
+
         try:
             os.makedirs(bands_path)
             os.makedirs(indices_path)
@@ -38,9 +46,9 @@ class Indice:
             raster_list['b11_path'].append(s2.pid_to_path(item, 'B11'))
 
         b4_file = merge_clip_raster(raster_file_list=raster_list['b4_path'], output_file=f'{bands_path}/b4.tif',
-                                    shp_file=shape_file, out_height=height, out_width=width)
+                                    shp_file=shape_file,  bbox=bounds, out_height=height, out_width=width)
         b8_file = merge_clip_raster(raster_file_list=raster_list['b8_path'], output_file=f'{bands_path}/b8.tif',
-                                    shp_file=shape_file, out_width=width, out_height=height)
+                                    shp_file=shape_file, bbox=bounds, out_width=width, out_height=height)
 
         # agrimask_path = 'data/temp/agrimask.tif'
         # agrimask_arr = raster_to_array(agrimask_path, 'float')
@@ -58,9 +66,9 @@ class Indice:
         b4 = b8 = ndvi = savi = None
 
         b8a_file = merge_clip_raster(raster_file_list=raster_list['b8a_path'], output_file=f'{bands_path}/b8a.tif',
-                                     shp_file=shape_file, out_width=width, out_height=height)
+                                     shp_file=shape_file, bbox=bounds, out_width=width, out_height=height)
         b11_file = merge_clip_raster(raster_file_list=raster_list['b11_path'], output_file=f'{bands_path}/b11.tif',
-                                     shp_file=shape_file, out_width=width, out_height=height)
+                                     shp_file=shape_file, bbox=bounds, out_width=width, out_height=height)
         b8a = raster_to_array(b8a_file, 'int16')
         b11 = raster_to_array(b11_file, 'int16')
 

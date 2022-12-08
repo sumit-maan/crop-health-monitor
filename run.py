@@ -36,11 +36,14 @@ args = parser.parse_args()
 
 def main(start_date, end_date, cloud_threshold, data_days_interval, shape_file=None, bbox=None, tiles=None,
          agrimask=None):
+    bounds = None
+    if bbox:
+        bounds = tuple(float(item) for item in bbox.split(' '))
     try:
         shutil.rmtree('data')
     except OSError as e:
         print("Error: %s - %s." % (e.filename, e.strerror))
-    pids = s2.get_product_ids(start_date, end_date, cloud_threshold, data_days_interval, shape_file, bbox, tiles)
+    pids = s2.get_product_ids(start_date, end_date, cloud_threshold, data_days_interval, shape_file, bounds, tiles)
     height = None
     width = None
     if agrimask:
@@ -49,10 +52,10 @@ def main(start_date, end_date, cloud_threshold, data_days_interval, shape_file=N
         for item in value0_list:
             temp_band_rasters.append(s2.pid_to_path(item, 'B04'))
         height, width = raster_sampling(temp_band_rasters, agrimask, shape_file)
-    if args.shape_file:
-        args_list = [(key, val, args.shape_file, height, width) for key, val in pids.items()]
-    else:
-        args_list = [(key, val, args.bbox, height, width) for key, val in pids.items()]
+    # if args.shape_file:
+    args_list = [(key, val, shape_file, bounds, height, width) for key, val in pids.items()]
+    # else:
+    #     args_list = [(key, val, args.bbox, height, width) for key, val in pids.items()]
 
     pool = Pool(cpu_count() - 2)
     with pool:
