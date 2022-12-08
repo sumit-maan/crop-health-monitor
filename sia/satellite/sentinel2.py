@@ -71,7 +71,7 @@ class Sentinel2:
                 response = s3_client.list_objects(Bucket=self.source_bucket, Prefix=_PREFIX)
                 for content in response.get('Contents', []):
                     key = content['Key']
-                    if key.endswith('.json'):
+                    if key.endswith('L2A.json'):
                         product_id = str(key).split('/')[-2]
                         pid_date = '-'.join([str(_year), str(_month).zfill(2), str(product_id[16:18]).zfill(2)])
                         if not validate_date(pid_date, start_date, end_date):
